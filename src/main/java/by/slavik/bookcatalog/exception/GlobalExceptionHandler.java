@@ -57,8 +57,8 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request) {
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex, request));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildError(HttpStatus.BAD_REQUEST, ex, request));
     }
 
     private ErrorResponseDto buildError(
