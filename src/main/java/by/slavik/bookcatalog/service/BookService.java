@@ -11,7 +11,7 @@ public interface BookService {
 
     ResponseBookDto findById(Long id);
 
-    Page<ResponseBookDto> find(String title, Pageable pageable);
+    Page<ResponseBookDto> findFilteredBooks(String title, Pageable pageable);
 
     void deleteById(Long id);
 }

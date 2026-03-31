@@ -122,3 +122,29 @@ $env:SPRING_PROFILES_ACTIVE="local"
     - Add Spring Security (authentication)
     - Add role-based access control (RBAC) for endpoints (e.g. `USER`, `ADMIN`)
     - Protect write endpoints (create/delete/update) and keep read endpoints public or role-based
+
+## Run with Docker (app + database)
+
+Requirements:
+- Docker Desktop (or Docker Engine) with `docker compose`
+
+Start:
+
+```
+docker compose up --build
+```
+
+App will be available at:
+- `http://localhost:8080`
+
+Stop:
+
+```
+docker compose down
+```
+
+Remove DB volume (optional):
+
+```
+docker compose down -v
+```

@@ -39,11 +39,11 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ResponseBookDto>> getAll(
+    public ResponseEntity<Page<ResponseBookDto>> getFilteredBooks(
             @RequestParam(required = false) String title,
             Pageable pageable
     ){
-        return ResponseEntity.ok(bookService.find(title, pageable));
+        return ResponseEntity.ok(bookService.findFilteredBooks(title, pageable));
     }
 
     @DeleteMapping("/{id}")

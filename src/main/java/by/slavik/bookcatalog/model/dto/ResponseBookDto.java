@@ -1,19 +1,13 @@
 package by.slavik.bookcatalog.model.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 @Builder
 public class ResponseBookDto {
-    private Long id;
-    private String title;
-    private String author;
-    private Integer publishedYear;
+    Long id;
+    String title;
+    String author;
+    Integer publishedYear;
 }

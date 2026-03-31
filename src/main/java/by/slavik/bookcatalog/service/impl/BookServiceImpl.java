@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<ResponseBookDto> find(String title, Pageable pageable) {
+    public Page<ResponseBookDto> findFilteredBooks(String title, Pageable pageable) {
         Page<Book> books;
         if (title == null || title.isBlank()) {
             books = bookRepository.findAll(pageable);

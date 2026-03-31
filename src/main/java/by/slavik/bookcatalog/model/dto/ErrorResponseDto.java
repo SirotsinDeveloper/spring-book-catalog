@@ -1,22 +1,16 @@
 package by.slavik.bookcatalog.model.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 @Builder
 public class ErrorResponseDto {
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String message;
-    private String path;
+    LocalDateTime timestamp;
+    int status;
+    String error;
+    String message;
+    String path;
 }
