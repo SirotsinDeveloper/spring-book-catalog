@@ -20,6 +20,9 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BookController.class)
 class BookControllerTest {
+    private final Long ID = 1L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,7 +49,7 @@ class BookControllerTest {
     void setUp() {
         sampleRequest = new RequestBookDto("Clean Code", "Robert C. Martin", 2008);
         sampleResponse = ResponseBookDto.builder()
-                .id(1L)
+                .id(ID)
                 .title("Clean Code")
                 .author("Robert C. Martin")
                 .publishedYear(2008)
@@ -69,9 +73,9 @@ class BookControllerTest {
 
     @Test
     void getBook() throws Exception {
-        Mockito.when(bookService.findById(1L)).thenReturn(sampleResponse);
+        Mockito.when(bookService.findById(ID)).thenReturn(sampleResponse);
 
-        mockMvc.perform(get("/books/{id}", 1L))
+        mockMvc.perform(get("/books/{id}", ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(sampleResponse.getId()))
                 .andExpect(jsonPath("$.title").value(sampleResponse.getTitle()))
@@ -93,9 +97,12 @@ class BookControllerTest {
 
     @Test
     void deleteById() throws Exception {
-        Mockito.when(bookService.deleteById(1L)).thenReturn(true);
+        doNothing().when(bookService).deleteById(ID);
 
-        mockMvc.perform(delete("/books/{id}", 1L))
+        mockMvc.perform(delete("/books/{id}", ID))
                 .andExpect(status().isNoContent());
+
+        verify(bookService).deleteById(ID);
+        verifyNoMoreInteractions(bookService);
     }
 }

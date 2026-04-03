@@ -20,10 +20,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
+    private final Long ID = 1L;
+    private final Book BOOK = new Book();
+
+    private final int PAGE_NUMBER = 0;
+    private final int PAGE_SIZE = 10;
 
     @Mock
     private BookRepository bookRepository;
@@ -37,83 +43,85 @@ class BookServiceImplTest {
     @Test
     void addBook() {
         RequestBookDto request = mock(RequestBookDto.class);
-        Book book = new Book();
         ResponseBookDto response = ResponseBookDto.builder()
-                .id(1L)
+                .id(ID)
                 .title("Test")
                 .author("Author")
                 .publishedYear(2020)
                 .build();
 
-        when(bookMapper.toEntity(request)).thenReturn(book);
-        when(bookRepository.save(book)).thenReturn(book);
-        when(bookMapper.toResponseDto(book)).thenReturn(response);
+        when(bookMapper.toEntity(request)).thenReturn(BOOK);
+        when(bookRepository.save(BOOK)).thenReturn(BOOK);
+        when(bookMapper.toResponseDto(BOOK)).thenReturn(response);
 
         ResponseBookDto result = bookService.addBook(request);
 
         assertThat(result).isEqualTo(response);
 
-        verify(bookRepository).save(book);
+        verify(bookRepository).save(BOOK);
         verify(bookMapper).toEntity(request);
-        verify(bookMapper).toResponseDto(book);
+        verify(bookMapper).toResponseDto(BOOK);
+
+        verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
     void getBookById() {
-        Long id = 1L;
-        Book book = new Book();
-        ResponseBookDto response = ResponseBookDto.builder().id(id).build();
+        ResponseBookDto response = ResponseBookDto.builder().id(ID).build();
 
-        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookMapper.toResponseDto(book)).thenReturn(response);
+        when(bookRepository.findById(ID)).thenReturn(Optional.of(BOOK));
+        when(bookMapper.toResponseDto(BOOK)).thenReturn(response);
 
-        ResponseBookDto result = bookService.findById(id);
+        ResponseBookDto result = bookService.findById(ID);
 
         assertThat(result).isEqualTo(response);
-        verify(bookRepository).findById(id);
+        verify(bookRepository).findById(ID);
+
+        verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
     void getAllBooksWhenTitleIsNull() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Book book = new Book();
-        Page<Book> page = new PageImpl<>(java.util.List.of(book));
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
+
+        Page<Book> page = new PageImpl<>(java.util.List.of(BOOK));
 
         when(bookRepository.findAll(pageable)).thenReturn(page);
-        when(bookMapper.toResponseDto(book)).thenReturn(ResponseBookDto.builder().build());
+        when(bookMapper.toResponseDto(BOOK)).thenReturn(ResponseBookDto.builder().build());
 
         Page<ResponseBookDto> result = bookService.findFilteredBooks(null, pageable);
 
         assertThat(result.getContent()).hasSize(1);
         verify(bookRepository).findAll(pageable);
+
+        verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
     void findFilteredBooksWhenTitleProvided() {
         String title = "Test";
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 
-        Book book = new Book();
-        Page<Book> page = new PageImpl<>(java.util.List.of(book));
+        Page<Book> page = new PageImpl<>(java.util.List.of(BOOK));
 
         when(bookRepository.findByTitle(title, pageable)).thenReturn(page);
-        when(bookMapper.toResponseDto(book)).thenReturn(ResponseBookDto.builder().build());
+        when(bookMapper.toResponseDto(BOOK)).thenReturn(ResponseBookDto.builder().build());
 
         Page<ResponseBookDto> result = bookService.findFilteredBooks(title, pageable);
 
         assertThat(result.getContent()).hasSize(1);
         verify(bookRepository).findByTitle(title, pageable);
+
+        verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
     void deleteBook() {
-        Long id = 1L;
+        bookService.deleteById(ID);
 
-        when(bookRepository.findById(id)).thenReturn(Optional.of(new Book()));
+        verify(bookRepository).deleteById(ID);
 
-        boolean result = bookService.deleteById(id);
-
-        assertThat(result).isTrue();
-        verify(bookRepository).deleteById(id);
+        verifyNoMoreInteractions(bookRepository);
     }
+
 }
