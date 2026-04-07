@@ -3,6 +3,9 @@ package by.slavik.bookcatalog.controller;
 import by.slavik.bookcatalog.model.dto.RequestBookDto;
 import by.slavik.bookcatalog.model.dto.ResponseBookDto;
 import by.slavik.bookcatalog.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/books")
+@Tag(name = "Books", description = "Books control")
 public class BookController {
     private final BookService bookService;
 
@@ -27,6 +31,8 @@ public class BookController {
     }
 
     @PostMapping
+    @Operation(summary = "Create book")
+    @ApiResponse(responseCode = "201", description = "The book has been created")
     public ResponseEntity<ResponseBookDto> addBook(@RequestBody @Valid RequestBookDto bookDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -34,11 +40,15 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Find book")
+    @ApiResponse(responseCode = "200", description = "The book has been find")
     public ResponseEntity<ResponseBookDto> getBook(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.findById(id));
     }
 
     @GetMapping
+    @Operation(summary = "Find filtered books")
+    @ApiResponse(responseCode = "200", description = "The filtered books has been find")
     public ResponseEntity<Page<ResponseBookDto>> getFilteredBooks(
             @RequestParam(required = false) String title,
             Pageable pageable
@@ -47,6 +57,8 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete book")
+    @ApiResponse(responseCode = "404", description = "The book has been deleted")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         bookService.deleteById(id);
         return ResponseEntity
