@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "book")
+@Table(name = "books")
 public class Book {
     @Id
     @Column(name = "id")
@@ -29,7 +29,7 @@ public class Book {
     @Column(name = "author_name")
     private String author;
 
-    @Column(name = "publish_year")
+    @Column(name = "published_year")
     private Integer publishedYear;
 
 }
