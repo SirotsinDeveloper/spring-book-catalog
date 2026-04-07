@@ -1,3 +1,6 @@
 spring:
   application:
     name: book-catalog
+
+  jpa:
+    open-in-view: false
